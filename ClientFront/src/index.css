@@ -1,0 +1,13 @@
+*, ::before, ::after{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body{
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  text-align: justify;
+  text-justify: inter-word;
+}
