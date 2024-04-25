@@ -1,56 +1,56 @@
-import React, {useState} from "react";
-import axios from "axios";
-
+import React, { useState } from 'react';
+import axios from 'axios';
 
 interface LoginModalProps {
-    setIsLogged: (isLogged: boolean) => void
+    onLoginSuccess: (username: string, token: string) => void;
 }
 
-const LoginModal = ({setIsLogged}: LoginModalProps) => {
-
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [incorrectEmail, setIncorrectEmail] = useState(false)
-    const [incorrectPwd, setIncorrectPwd] = useState(false)
+const LoginModal = ({ onLoginSuccess }: LoginModalProps) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [incorrectEmail, setIncorrectEmail] = useState(false);
+    const [incorrectPwd, setIncorrectPwd] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault()
+        event.preventDefault();
         try {
-            const user = (await axios.get(import.meta.env.VITE_URL_MS_USER + '/getUser', {params: {username: username}})).data.response
+            const response = await axios.get(import.meta.env.VITE_URL_MS_USER + '/getUser', {
+                params: { username }
+            });
+            const user = response.data.response;
             if (!user) {
-                setIncorrectEmail(true)
+                setIncorrectEmail(true);
             } else {
-                await axios.post(import.meta.env.VITE_URL_MS_USER + '/checkUserPassword', null, {
+                const passwordResponse = await axios.post(import.meta.env.VITE_URL_MS_USER + '/checkUserPassword', null, {
                     params: {
-                        username: username,
-                        password: password
+                        username,
+                        password
                     }
-                })
-                const token = (await axios.post(import.meta.env.VITE_URL_MS_AUTH + '/create', null, {
+                });
+                const tokenResponse = await axios.post(import.meta.env.VITE_URL_MS_AUTH + '/create', null, {
                     params: {
                         userId: user.UserId,
-                        username: username,
+                        username,
                     }
-                })).data.token
+                });
+                const token = tokenResponse.data.token;
                 await axios.post(import.meta.env.VITE_URL_MS_USER + '/addTokenToUser', null, {
                     params: {
-                        username: username,
-                        token: token
+                        username,
+                        token
                     }
-                })
-                localStorage.removeItem('JWT_auth_KillerBee');
-                localStorage.setItem('JWT_auth_KillerBee', token)
-                setUsername('')
-                setPassword('')
-                setIsLogged(true)
+                });
+                onLoginSuccess(username, token); // Indiquer que la connexion est réussie
+                setUsername('');
+                setPassword('');
             }
         } catch (error) {
-            console.log(error);
-            if ((error as any).response.status === 401) {
-                setIncorrectPwd(true)
+            console.error(error);
+            if (error.response && error.response.status === 401) {
+                setIncorrectPwd(true);
             }
         }
-    }
+    };
 
     return (
         <>
@@ -108,4 +108,4 @@ const LoginModal = ({setIsLogged}: LoginModalProps) => {
     )
 }
 
-export default LoginModal
+export default LoginModal;

@@ -16,7 +16,7 @@ const FrisbeeRow = ({frisbee, setFrisbees}: FrisbeeRowProps) => {
                 <td>{frisbee.Gamme}</td>
                 <td>{frisbee.Description}</td>
                 <td>
-                    <button type="button" className="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target={"#delete" + frisbee.ModelID}>Danger</button>
+                    <button type="button" className="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target={"#delete" + frisbee.ModelID}>Supprimer</button>
                 </td>
             </tr>
         </>
