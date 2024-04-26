@@ -39,7 +39,7 @@ const CreateFrisbeeModal = ({setFrisbees}: CreateFrisbeeModalProps) => {
 
     return (
         <>
-            <div className="modal fade" id="create" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal fade" id="createFrisbeeModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <form>
                         <div className="modal-content">

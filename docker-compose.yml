@@ -37,6 +37,19 @@ services:
     volumes:
       - dbfrisbee:/var/lib/mysql
 
+  ingredientdb:
+    image: mysql:5.7
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD_INGREDIENT
+      - MYSQL_DATABASE=$DB_NAME_INGREDIENT
+      - MYSQL_ROOT_HOST=%
+    ports:
+      - $DB_PORT_INGREDIENT:3306
+    volumes:
+      - dbingredient:/var/lib/mysql
+
   auth:
     depends_on:
       - authdb
@@ -85,6 +98,25 @@ services:
     stdin_open: true
     tty: true
 
+  ingredient:
+    depends_on:
+      - ingredientdb
+      - reverse-proxy
+    build: Micro-services/Ingredients
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 3002:3002
+    environment:
+      - DB_HOST=ingredientdb
+      - DB_USER=$DB_USER_INGREDIENT
+      - DB_PASSWORD=$DB_PASSWORD_INGREDIENT
+      - DB_NAME=$DB_NAME_INGREDIENT
+      - DB_PORT=$DB_PORT_INGREDIENT
+    stdin_open: true
+    tty: true
+
 volumes:
   dbauth:
   dbfrisbee:
+  dbingredient:
